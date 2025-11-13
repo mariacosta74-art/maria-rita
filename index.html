@@ -3,79 +3,379 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minha Loja de Roupas - Página Inicial</title>
-    <link rel="stylesheet" href="maria.css">
+    <title>Minha Loja - Carrinho de Compras</title>
+    <!-- Inclui Tailwind CSS para estilização moderna -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Define a fonte padrão e fundo */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f7f7;
+        }
+        /* Estilo para garantir que o modal cubra tudo e aplique o fundo escuro */
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+    </style>
 </head>
-<body>
+<body class="p-4 sm:p-8">
 
-    <header class="cabecalho">
-        <h1>Minha Loja Fashion</h1>
-        <nav>
-            <ul>
-                <li><a href="#">Início</a></li>
-                <li><a href="#">Produtos</a></li>
-                <li><a href="#">Sobre</a></li>
-                <li><a href="#">Contato</a></li>
-                <li><a href="#" class="carrinho">🛒 Carrinho (0)</a></li>
-            </ul>
-        </nav>
+    <header class="bg-white shadow-md p-4 mb-8 rounded-lg">
+        <h1 class="text-3xl font-bold text-gray-800 text-center">Minha Loja Fashion</h1>
+        <p class="text-center text-gray-600 mt-1">Produtos em Destaque</p>
     </header>
 
-    <main class="container">
-        <h2>Destaques da Semana</h2>
-
-        <section class="grade-produtos">
-
-            <div class="card-produto">
-                <img src="calca-cargo-feminina-cru-look-belle_2160x2700.webp" alt="Calça Cargo Perna Reta Linho com Viscose CRU">
-                <h3>Calça Cargo Perna Reta Linho com Viscose CRU</h3>
-                <p class="preco">R$ 219,00</p>
-                <button class="botao-comprar">Adicionar ao Carrinho</button>
-            </div>
-
-            <div class="card-produto">
-                <img src="placeholder-calca.jpg" alt="Calça Jeans Skinny">
-                <h3>Calça Jeans</h3>
-                <p class="preco">R$ 129,90</p>
-                <button class="botao-comprar">Adicionar ao Carrinho</button>
-            </div>
-
-            <div class="card-produto">
-                <img src="placeholder-vestido.jpg" alt="Vestido Floral">
-                <h3>Vestido Floral</h3>
-                <p class="preco">R$ 89,90</p>
-                <button class="botao-comprar">Adicionar ao Carrinho</button>
-            </div>
-
-
-     
-
-            <div class="card-produto">
-                <img src="Imagem1.jpg" alt="Camiseta Básica">
-                <h3>Camiseta Básica</h3>
-                <p class="preco">R$ 49,90</p>
-                <button class="botao-comprar">Adicionar ao Carrinho</button>
-            </div>
-
-            <div class="card-produto">
-                <img src="placeholder-calca.jpg" alt="Calça Jeans Skinny">
-                <h3>Calça Jeans</h3>
-                <p class="preco">R$ 129,90</p>
-                <button class="botao-comprar">Adicionar ao Carrinho</button>
-            </div>
-
-            <div class="card-produto">
-                <img src="placeholder-vestido.jpg" alt="Vestido Floral">
-                <h3>Vestido Floral</h3>
-                <p class="preco">R$ 89,90</p>
-                <button class="botao-comprar">Adicionar ao Carrinho</button>
-            </div>
-
+    <main class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- COLUNA 1 & 2: LISTA DE PRODUTOS -->
+        <section class="lg:col-span-2 space-y-6" id="product-list-container">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-4">Produtos Disponíveis</h2>
+            <!-- Os produtos serão carregados aqui pelo JavaScript -->
         </section>
+
+        <!-- COLUNA 3: O CARRINHO DE COMPRAS -->
+        <section class="bg-white p-6 rounded-xl shadow-lg h-fit sticky top-4">
+            <h2 class="text-2xl font-bold text-gray-800 border-b pb-3 mb-4 flex justify-between items-center">
+                🛒 Meu Carrinho
+                <span id="cart-item-count" class="text-sm bg-indigo-500 text-white rounded-full px-2 py-0.5">0 itens</span>
+            </h2>
+            
+            <!-- Lista de Itens no Carrinho -->
+            <div id="cart-items" class="space-y-4 min-h-[100px]">
+                <!-- Itens serão adicionados aqui -->
+            </div>
+
+            <!-- Resumo e Total -->
+            <div class="border-t pt-4 mt-6">
+                <div class="flex justify-between items-center text-xl font-bold text-gray-800">
+                    <span>Total a Pagar:</span>
+                    <span id="cart-total" class="text-indigo-600">R$ 0,00</span>
+                </div>
+                
+                <button onclick="openCheckoutModal()" id="checkout-button"
+                        class="w-full bg-indigo-600 text-white font-semibold py-3 rounded-lg mt-5 hover:bg-indigo-700 transition duration-200 shadow-md disabled:bg-indigo-400"
+                        disabled>
+                    Finalizar Compra
+                </button>
+            </div>
+        </section>
+
     </main>
-<script
-    <footer src class="rodape">
-        <p>&copy; 2025 Minha Loja Fashion. Todos os direitos reservados.</p>
+    
+    <!-- MODAL DE CHECKOUT (Finalização de Compra) -->
+    <div id="checkout-modal" class="fixed inset-0 hidden z-50 flex items-center justify-center modal-overlay transition-opacity duration-300">
+        <div class="bg-white p-8 rounded-xl shadow-2xl max-w-lg w-full m-4 transform scale-100 transition-transform duration-300">
+            <div class="flex justify-between items-center border-b pb-3 mb-4">
+                <h3 class="text-2xl font-bold text-gray-800">Resumo do Pedido</h3>
+                <button onclick="closeCheckoutModal()" class="text-gray-400 hover:text-gray-600">
+                    <!-- Ícone de Fechar (X) -->
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <!-- Detalhes do Carrinho no Modal -->
+            <div id="modal-cart-summary" class="space-y-3 max-h-60 overflow-y-auto mb-4">
+                <!-- Conteúdo dinâmico será injetado aqui -->
+            </div>
+
+            <div class="border-t pt-4">
+                <div class="flex justify-between items-center text-xl font-bold text-gray-800 mb-4">
+                    <span>Total Final:</span>
+                    <span id="modal-total" class="text-green-600">R$ 0,00</span>
+                </div>
+                
+                <p class="text-sm text-gray-500 mb-4">Simulação: Em um ambiente real, aqui seriam solicitados dados de entrega e pagamento.</p>
+
+                <div class="flex justify-end space-x-3">
+                    <button onclick="closeCheckoutModal()" class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100 transition">
+                        Continuar Comprando
+                    </button>
+                    <button onclick="confirmPurchase()" class="px-6 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition shadow-md">
+                        Confirmar Compra
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- MODAL DE MENSAGEM (Para Notificações de Sucesso/Erro) -->
+    <div id="message-modal" class="fixed bottom-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-xl hidden transition-opacity duration-300">
+        <p id="message-text"></p>
+    </div>
+
+    <footer class="text-center text-gray-500 mt-10 p-4">
+        &copy; 2025 Minha Loja Fashion. Todos os direitos reservados.
     </footer>
 
+    <script>
+        // =======================================================
+        // LÓGICA DO CARRINHO DE COMPRAS EM JAVASCRIPT
+        // =======================================================
+        
+        const CART_STORAGE_KEY = 'minhaLojaFashionCart';
+
+        // Mock de dados dos produtos (simulando um banco de dados)
+        const PRODUCTS = [
+            { id: 1, name: "Calça Cargo Perna Reta Linho", price: 219.00, image: "https://placehold.co/100x125/000000/FFFFFF?text=Cargo" },
+            { id: 2, name: "Calça Jeans Skinny Azul", price: 129.90, image: "https://placehold.co/100x125/3B82F6/FFFFFF?text=Jeans" },
+            { id: 3, name: "Vestido Floral Casual", price: 89.90, image: "https://placehold.co/100x125/EC4899/FFFFFF?text=Vestido" },
+            { id: 4, name: "Camiseta Básica Algodão", price: 49.90, image: "https://placehold.co/100x125/10B981/FFFFFF?text=T-Shirt" }
+        ];
+
+        // Tenta carregar o carrinho do localStorage ou inicializa vazio
+        let cart = loadCartFromStorage();
+        
+        // -------------------------------------------------------
+        // UTILIDADES E PERSISTÊNCIA
+        // -------------------------------------------------------
+
+        /** Carrega o carrinho do localStorage para manter o estado após recarga. */
+        function loadCartFromStorage() {
+            const storedCart = localStorage.getItem(CART_STORAGE_KEY);
+            try {
+                return storedCart ? JSON.parse(storedCart) : {};
+            } catch (e) {
+                console.error("Erro ao carregar o carrinho do localStorage:", e);
+                return {};
+            }
+        }
+
+        /** Salva o estado atual do carrinho no localStorage. */
+        function saveCartToStorage() {
+            localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+        }
+
+        /** Formata um número como moeda brasileira (R$). */
+        const formatCurrency = (value) => {
+            return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        };
+        
+        /** Exibe uma mensagem de notificação temporária no canto inferior. */
+        function showMessage(text, isRemoval = false) {
+            const modal = document.getElementById('message-modal');
+            const textElement = document.getElementById('message-text');
+            
+            textElement.textContent = text;
+            
+            // Define cor do modal (verde para sucesso, vermelho para remoção/erro)
+            modal.classList.remove('bg-green-500', 'bg-red-500');
+            modal.classList.add(isRemoval ? 'bg-red-500' : 'bg-green-500', 'opacity-100');
+            modal.classList.remove('hidden');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 3000);
+        }
+
+        // -------------------------------------------------------
+        // CÁLCULO E RENDERIZAÇÃO
+        // -------------------------------------------------------
+
+        /** * Calcula o total, atualiza a UI (total, contador de itens, botão checkout) 
+         * e salva o estado no localStorage. 
+         */
+        const updateCartTotal = () => {
+            let total = 0;
+            let totalItems = 0;
+
+            for (const id in cart) {
+                const item = cart[id];
+                // Lógica de Soma: Preço do Produto * Quantidade
+                total += item.product.price * item.quantity;
+                totalItems += item.quantity;
+            }
+
+            // Atualiza os elementos na seção principal do carrinho
+            document.getElementById('cart-total').textContent = formatCurrency(total);
+            document.getElementById('cart-item-count').textContent = `${totalItems} ${totalItems === 1 ? 'item' : 'itens'}`;
+            
+            // Habilita/Desabilita o botão de checkout com base no total de itens
+            document.getElementById('checkout-button').disabled = totalItems === 0;
+
+            saveCartToStorage(); // Salva o estado atual
+            renderCartItems(); // Redesenha a lista
+        };
+
+        /** Redesenha a lista de itens dentro do carrinho (na coluna 3). */
+        const renderCartItems = () => {
+            const cartItemsContainer = document.getElementById('cart-items');
+            cartItemsContainer.innerHTML = ''; 
+
+            const itemsInCart = Object.values(cart);
+
+            if (itemsInCart.length === 0) {
+                cartItemsContainer.innerHTML = '<p class="text-center text-gray-500 mt-4">Seu carrinho está vazio.</p>';
+                return;
+            }
+
+            itemsInCart.forEach(item => {
+                const subtotal = item.product.price * item.quantity;
+                
+                const itemHtml = `
+                    <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                        <img src="${item.product.image}" alt="${item.product.name}" class="w-16 h-20 object-cover rounded" onerror="this.onerror=null; this.src='https://placehold.co/64x80/E0E0E0/333333?text=Item'">
+                        <div class="flex-grow">
+                            <p class="font-medium text-sm text-gray-800">${item.product.name}</p>
+                            <p class="text-xs text-gray-500">${formatCurrency(item.product.price)} x ${item.quantity}</p>
+                            <p class="font-bold text-indigo-500 text-sm mt-1">Subtotal: ${formatCurrency(subtotal)}</p>
+                        </div>
+                        
+                        <div class="flex flex-col items-center space-y-1">
+                            <!-- Botão de Aumentar Quantidade -->
+                            <button onclick="changeQuantity(${item.product.id}, 1)" 
+                                class="w-6 h-6 bg-gray-200 text-gray-700 rounded-full text-sm font-bold hover:bg-gray-300">+</button>
+                            <!-- Botão de Diminuir Quantidade -->
+                            <button onclick="changeQuantity(${item.product.id}, -1)" 
+                                class="w-6 h-6 bg-gray-200 text-gray-700 rounded-full text-sm font-bold hover:bg-gray-300">-</button>
+                        </div>
+
+                        <!-- Botão de Remover (Lixeira) -->
+                        <button onclick="removeItem(${item.product.id})" 
+                            class="text-red-500 hover:text-red-700 p-1 transition duration-150" aria-label="Remover item">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                    </div>
+                `;
+                cartItemsContainer.innerHTML += itemHtml;
+            });
+        };
+
+
+        // -------------------------------------------------------
+        // MANIPULAÇÃO DO CARRINHO (Ações do Usuário)
+        // -------------------------------------------------------
+
+        window.addToCart = (productId) => {
+            const productToAdd = PRODUCTS.find(p => p.id === productId);
+            if (productToAdd) {
+                if (cart[productId]) {
+                    cart[productId].quantity += 1;
+                } else {
+                    cart[productId] = { quantity: 1, product: productToAdd };
+                }
+                updateCartTotal();
+                showMessage(`✅ ${productToAdd.name} adicionado ao carrinho!`);
+            }
+        };
+        
+        window.changeQuantity = (productId, delta) => {
+            if (cart[productId]) {
+                const newQuantity = cart[productId].quantity + delta;
+                if (newQuantity <= 0) {
+                    removeItem(productId);
+                } else {
+                    cart[productId].quantity = newQuantity;
+                    updateCartTotal();
+                }
+            }
+        };
+
+        window.removeItem = (productId) => {
+            if (cart[productId]) {
+                delete cart[productId];
+                updateCartTotal();
+                showMessage("❌ Item removido do carrinho.", true);
+            }
+        };
+        
+        // -------------------------------------------------------
+        // FUNÇÕES DO CHECKOUT (MODAL)
+        // -------------------------------------------------------
+
+        /** Abre o modal de checkout, preenchendo o resumo e o total final. */
+        window.openCheckoutModal = () => {
+            const modal = document.getElementById('checkout-modal');
+            const summaryContainer = document.getElementById('modal-cart-summary');
+            const finalTotalElement = document.getElementById('modal-total');
+
+            summaryContainer.innerHTML = '';
+            let currentTotal = 0;
+
+            const itemsInCart = Object.values(cart);
+
+            if (itemsInCart.length === 0) {
+                showMessage("Seu carrinho está vazio. Adicione produtos antes de finalizar.", true);
+                return;
+            }
+
+            itemsInCart.forEach(item => {
+                const subtotal = item.product.price * item.quantity;
+                currentTotal += subtotal;
+
+                summaryContainer.innerHTML += `
+                    <div class="flex justify-between items-center text-sm border-b border-gray-100 pb-2">
+                        <span class="text-gray-600">${item.product.name} (x${item.quantity})</span>
+                        <span class="font-medium text-gray-800">${formatCurrency(subtotal)}</span>
+                    </div>
+                `;
+            });
+            
+            finalTotalElement.textContent = formatCurrency(currentTotal);
+            modal.classList.remove('hidden');
+        };
+
+        /** Fecha o modal de checkout. */
+        window.closeCheckoutModal = () => {
+            document.getElementById('checkout-modal').classList.add('hidden');
+        };
+
+        /** Simula a confirmação da compra, limpando o carrinho e notificando o usuário. */
+        window.confirmPurchase = () => {
+            // Em um sistema real, aqui você faria a chamada à API de pagamento.
+            
+            // 1. Limpar o carrinho (simulação de sucesso da transação)
+            cart = {};
+            
+            // 2. Atualizar a UI e o armazenamento
+            updateCartTotal(); 
+            
+            // 3. Fechar o modal
+            closeCheckoutModal(); 
+            
+            // 4. Mostrar mensagem de sucesso
+            showMessage("🎉 Compra finalizada com sucesso! Obrigado por comprar conosco.");
+        };
+
+
+        // -------------------------------------------------------
+        // INICIALIZAÇÃO DA PÁGINA
+        // -------------------------------------------------------
+
+        /** Gera o HTML dos cards de produto na lista principal. */
+        const renderProductList = () => {
+            const listContainer = document.getElementById('product-list-container');
+            listContainer.innerHTML = PRODUCTS.map(product => `
+                <div class="flex bg-white rounded-xl shadow-lg overflow-hidden transition duration-200 hover:shadow-xl">
+                    <div class="w-1/3 max-w-[150px] bg-gray-100">
+                        <img src="${product.image}" alt="${product.name}" 
+                             class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/150x187/E0E0E0/333333?text=Produto'">
+                    </div>
+                    <div class="w-2/3 p-4 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900">${product.name}</h3>
+                            <p class="text-sm text-gray-500 mt-1">Material de alta qualidade e design exclusivo.</p>
+                        </div>
+                        <div class="mt-3 flex justify-between items-center">
+                            <span class="text-2xl font-extrabold text-red-600">${formatCurrency(product.price)}</span>
+                            
+                            <!-- Botão que chama a função de adicionar ao carrinho -->
+                            <button onclick="addToCart(${product.id})" 
+                                class="bg-indigo-500 text-white font-medium px-4 py-2 rounded-full text-sm hover:bg-indigo-600 transition duration-150 shadow-md">
+                                + Adicionar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        };
+
+        // Executa as funções ao carregar a página
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProductList();
+            // Carrega o carrinho do localStorage e calcula o total inicial
+            updateCartTotal(); 
+        });
+
+    </script>
 </body>
+</html>
